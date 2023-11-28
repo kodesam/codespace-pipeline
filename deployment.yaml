@@ -1,0 +1,34 @@
+- name: Create deployment with secrets, configmap, service, and route
+  hosts: localhost
+  gather_facts: false
+
+  vars:
+    deployment_name: my-deployment
+    template_input_file: templates/input.j2
+
+  tasks:
+    - name: Load Jinja template input file
+      slurp:
+        src: "{{ template_input_file }}"
+      register: template_input
+
+    - name: Render Jinja template
+      template:
+        src: "{{ template_input_file }}"
+        dest: "{{ deployment_name }}.yaml"
+        vars:
+          secrets: "{{ secrets }}"
+          configmap: "{{ configmap }}"
+          service_name: "{{ service_name }}"
+          route_host: "{{ route_host }}"
+          template_input: "{{ template_input.content | b64decode | from_yaml }}"
+
+    - name: Apply deployment
+      kubectl:
+        state: present
+        src: "{{ deployment_name }}.yaml"
+
+    - name: Remove temporary file
+      file:
+        path: "{{ deployment_name }}.yaml"
+        state: absent
