@@ -1,0 +1,14 @@
+secrets:
+  - name: db-password
+    value: secretpassword
+  - name: api-key
+    value: apikeyvalue
+
+configmap:
+  - name: app-config
+    value:
+      app_name: my-app
+      app_env: production
+
+service_name: my-service
+route_host: mydomain.com
