@@ -1,0 +1,57 @@
+---
+- name: Create Kubernetes cluster
+  hosts: localhost
+  gather_facts: false
+
+  vars:
+    cluster_name: my-cluster
+    master_node_name: master
+    worker_node_name: worker
+    kube_version: "1.21.2"
+    template_input_file: templates/input.j2
+
+  tasks:
+    - name: Load Jinja template input file
+      slurp:
+        src: "{{ template_input_file }}"
+      register: template_input
+
+    - name: Render Jinja template for master node
+      template:
+        src: "{{ template_input_file }}"
+        dest: "{{ master_node_name }}.yaml"
+        vars:
+          node_name: "{{ master_node_name }}"
+          cluster_name: "{{ cluster_name }}"
+          role: "master"
+          kube_version: "{{ kube_version }}"
+          template_input: "{{ template_input.content | b64decode | from_yaml }}"
+
+    - name: Render Jinja template for worker node
+      template:
+        src: "{{ template_input_file }}"
+        dest: "{{ worker_node_name }}.yaml"
+        vars:
+          node_name: "{{ worker_node_name }}"
+          cluster_name: "{{ cluster_name }}"
+          role: "worker"
+          kube_version: "{{ kube_version }}"
+          template_input: "{{ template_input.content | b64decode | from_yaml }}"
+
+    - name: Configure Master Node
+      command: "kubectl apply -f {{ master_node_name }}.yaml"
+      args:
+        chdir: "{{ playbook_dir }}"
+
+    - name: Configure Worker Node
+      command: "kubectl apply -f {{ worker_node_name }}.yaml"
+      args:
+        chdir: "{{ playbook_dir }}"
+
+    - name: Remove temporary files
+      file:
+        path: "{{ item }}"
+        state: absent
+      with_items:
+        - "{{ master_node_name }}.yaml"
+        - "{{ worker_node_name }}.yaml"
