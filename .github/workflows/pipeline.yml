@@ -1,0 +1,35 @@
+name: Deploy to GitHub Codespace
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up GitHub Codespace
+        uses: actions/github-script@v5
+        with:
+          script: |
+            gh codespace create --name "My Codespace"
+            gh codespace wait --name "My Codespace"
+            gh codespace enable-feature --name "My Codespace" --extension "ms-python.vscode-pylance"
+
+      - name: Install dependencies
+        run: |
+          pip install ansible
+
+      - name: Configure Ansible inventory
+        run: |
+          echo "[local]" > inventory
+          echo "localhost ansible_connection=local" >> inventory
+
+      - name: Run Ansible playbook
+        run: |
+          ansible-playbook playbook.yaml -i inventory
