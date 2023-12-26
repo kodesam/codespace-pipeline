@@ -1,0 +1,36 @@
+To create a Deployment with 3 ReplicaSets in OpenShift, you can use the following Ansible playbook code:
+
+```yaml
+---
+- name: Create Deployment with 3 ReplicaSets
+  hosts: your_target_hosts
+  become: true
+  
+  tasks:
+    - name: Create Deployment
+      k8s:
+        api_version: apps/v1
+        kind: Deployment
+        namespace: your_namespace
+        name: my-deployment
+        state: present
+        spec:
+          replicas: 3
+          selector:
+            matchLabels:
+              app: my-app
+          template:
+            metadata:
+              labels:
+                app: my-app
+            spec:
+              containers:
+                - name: my-container
+                  image: your_image
+                  ports:
+                    - containerPort: your_container_port
+```
+
+Make sure to replace `your_target_hosts`, `your_namespace`, `my-app`, `my-container`, `your_image`, and `your_container_port` with appropriate values for your Deployment.
+
+Note: This playbook assumes you have the `k8s` module installed, which provides the ability to manage Kubernetes objects.
