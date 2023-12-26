@@ -1,0 +1,38 @@
+To deploy a pod with a website on OpenShift using Ansible, you can use the following Ansible playbook example. 
+
+```yaml
+---
+- hosts: localhost
+  tasks:
+    - name: Create OpenShift project
+      oc_project:
+        name: my-project
+        state: present
+    
+    - name: Create pod
+      k8s:
+        name: my-pod
+        api_version: v1
+        kind: Pod
+        definition:
+          apiVersion: v1
+          kind: Pod
+          metadata:
+            name: my-pod
+          spec:
+            containers:
+            - name: my-container
+              image: nginx:latest
+              ports:
+              - containerPort: 80
+```
+
+In this example, we are creating a project named "my-project" using the `oc_project` module and then creating a pod named "my-pod" using the `k8s` module. The pod uses the `nginx:latest` image and exposes port 80.
+
+You can save this playbook in a file, for example `deploy_website.yaml`, and execute it using the `ansible-playbook` command:
+
+```
+ansible-playbook deploy_website.yaml
+```
+
+Make sure you have the necessary Ansible modules (`oc_project` and `k8s`) installed and configured properly. Adjust the playbook according to your needs, like the project name, pod name, and container image.
