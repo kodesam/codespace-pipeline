@@ -1,0 +1,32 @@
+Here is an example of an Ansible playbook code to create a deployment with 3 replicasets:
+
+```yaml
+---
+- name: Create Deployment with 3 ReplicaSets
+  hosts: your_target_hosts
+  become: true
+
+  tasks:
+    - name: Create Deployment
+      k8s:
+        api_version: apps/v1
+        kind: Deployment
+        name: my-deployment
+        namespace: your_namespace
+        replicas: 3
+        selector:
+          matchLabels:
+            app: my-app
+        template:
+          metadata:
+            labels:
+              app: my-app
+          spec:
+            containers:
+              - name: my-container
+                image: your_image
+                ports:
+                  - containerPort: your_container_port
+```
+
+Make sure to replace `your_target_hosts`, `your_namespace`, `my-app`, `my-container`, `your_image`, and `your_container_port` with the appropriate values for your deployment.
