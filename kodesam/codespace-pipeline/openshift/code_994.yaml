@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: max-deployment
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: max
+  template:
+    metadata:
+      labels:
+        app: max
+    spec:
+      containers:
+      - name: max-pod
+        image: nginx:latest
+        ports:
+        - containerPort: 80
+          protocol: TCP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: max-service
+spec:
+  selector:
+    app: max
+  ports:
+  - name: http
+    port: 80
+    targetPort: 80
+    protocol: TCP
+  type: NodePort
+---
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: max-route
+spec:
+  to:
+    kind: Service
+    name: max-service
+  port:
+    targetPort: http
+  tls:
+    termination: edge
