@@ -1,0 +1,38 @@
+Sure, here's an example of a basic health check script for a Linux VM:
+
+```bash
+#!/bin/bash
+
+# Check CPU usage
+cpu_usage=$(top -bn1 | grep "Cpu(s)" | awk '{print $2 + $4}')
+echo "CPU Usage: $cpu_usage%"
+
+# Check memory usage
+mem_usage=$(free -m | awk 'NR==2{printf "%.2f%%", $3*100/$2 }')
+echo "Memory Usage: $mem_usage"
+
+# Check disk usage
+disk_usage=$(df -h | awk '$NF=="/"{printf "%s", $5}')
+echo "Disk Usage: $disk_usage"
+
+# Check network connectivity
+ping -c 3 google.com &> /dev/null
+if [ $? -eq 0 ]; then
+  echo "Internet connectivity: Connected"
+else
+  echo "Internet connectivity: Disconnected"
+fi
+
+# Check SSH connectivity
+ssh_status=$(systemctl is-active ssh)
+echo "SSH connectivity: $ssh_status"
+
+# Add more health checks as needed
+
+```
+
+You can save this script to a file, for example `health_check.sh`, on your Linux VM. Then, you can execute the script to perform the health check. The script will display the CPU usage, memory usage, disk usage, network connectivity, and SSH connectivity.
+
+Note that this script uses various Linux command-line utilities, such as `top`, `free`, `df`, `ping`, and `systemctl`. Make sure these utilities are available on your Linux VM for the script to work correctly.
+
+You can modify this script or add additional health checks based on your specific requirements or preferences.
