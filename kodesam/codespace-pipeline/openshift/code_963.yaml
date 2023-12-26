@@ -1,0 +1,37 @@
+To create a Deployment with 3 ReplicaSets in OpenShift, you can follow the steps below:
+
+1. Create a YAML file, for example, `deployment.yaml`, and add the following code:
+
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-deployment
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: my-app
+  template:
+    metadata:
+      labels:
+        app: my-app
+    spec:
+      containers:
+        - name: my-container
+          image: your_image
+          ports:
+            - containerPort: your_container_port
+```
+
+2. Replace `my-deployment`, `my-app`, `your_image`, and `your_container_port` with the appropriate values for your Deployment.
+
+3. Run the following kubectl command to create the Deployment:
+
+```
+kubectl create -f deployment.yaml
+```
+
+This will create a Deployment named `my-deployment` with 3 ReplicaSets and a single container running the specified image.
+
+Note: Make sure you have the necessary permissions to create the Deployment in the target OpenShift cluster using the `kubectl` command.
