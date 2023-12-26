@@ -1,0 +1,33 @@
+Below is an example of an OpenShift YAML file that creates a Deployment with 3 ReplicaSets:
+
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-deployment
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: my-app
+  template:
+    metadata:
+      labels:
+        app: my-app
+    spec:
+      containers:
+        - name: my-container
+          image: your_image
+          ports:
+            - containerPort: your_container_port
+```
+
+Make sure to replace `my-deployment`, `my-app`, `your_image`, and `your_container_port` with the appropriate values for your Deployment.
+
+You can apply this YAML file using the `oc` command-line tool by running the following command:
+
+```
+oc apply -f deployment.yaml
+```
+
+This will create a Deployment named `my-deployment` with 3 ReplicaSets, each running a container with the specified image and port.
