@@ -1,0 +1,92 @@
+Here is an example of creating an OpenShift deployment pod, services, secrets, configmap, and routes using a Kubernetes YAML file:
+
+1. Create a YAML file named `openshift-deployment.yaml` and add the following content:
+
+```yaml
+# Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: glueapp
+spec:
+  selector:
+    matchLabels:
+      app: glueapp
+  replicas: 4
+  template:
+    metadata:
+      labels:
+        app: glueapp
+    spec:
+      containers:
+        - name: my-app
+          image: nginx:latest
+          ports:
+            - containerPort: 80
+          volumeMounts:
+            - name: secret-volume
+              mountPath: /etc/my-app/secret
+            - name: configmap-volume
+              mountPath: /etc/my-app/config
+      volumes:
+        - name: secret-volume
+          secret:
+            secretName: my-secret
+        - name: configmap-volume
+          configMap:
+            name: my-configmap
+
+# Services
+apiVersion: v1
+kind: Service
+metadata:
+  name: glueapp-service
+spec:
+  selector:
+    app: glueapp
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+
+# Secrets
+apiVersion: v1
+kind: Secret
+metadata:
+  name: my-secret
+type: Opaque
+data:
+  password: base64encodedpassword
+
+# ConfigMap
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: my-configmap
+data:
+  app.properties: |
+    key1=value1
+    key2=value2
+
+# Routes
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: glueapp-route
+spec:
+  to:
+    kind: Service
+    name: glueapp-service
+  port:
+    targetPort: 80
+```
+
+2. Save the file and apply it using the following command:
+
+```bash
+oc apply -f openshift-deployment.yaml
+```
+
+This will create an OpenShift deployment pod with 4 replicas, a service, a secret, a configmap, and a route for accessing the application.
+
+Make sure to replace the values in the YAML file with your desired values.
