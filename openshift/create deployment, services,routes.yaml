@@ -1,0 +1,67 @@
+Here is an example YAML code for creating a deployment, service, and route in Ansible:
+
+```yaml
+---
+- name: Create deployment, service, and route
+  k8s:
+    state: present
+    definition:
+      kind: Deployment
+      apiVersion: apps/v1
+      metadata:
+        name: siteq-deployment
+      spec:
+        replicas: 3
+        selector:
+          matchLabels:
+            app: siteq
+        template:
+          metadata:
+            labels:
+              app: siteq
+          spec:
+            containers:
+              - name: nginx
+                image: nginx:latest
+                ports:
+                  - containerPort: 80
+
+- name: Create service
+  k8s:
+    state: present
+    definition:
+      apiVersion: v1
+      kind: Service
+      metadata:
+        name: siteq-service
+      spec:
+        selector:
+          app: siteq
+        ports:
+          - name: http
+            port: 80
+            targetPort: 80
+        type: ClusterIP
+
+- name: Create route
+  k8s:
+    state: present
+    definition:
+      apiVersion: route.openshift.io/v1
+      kind: Route
+      metadata:
+        name: siteq-route
+      spec:
+        host: your-hostname.com
+        to:
+          kind: Service
+          name: siteq-service
+```
+
+You can save this YAML code in a file, for example `deploy_siteq.yaml`, and run the playbook using the `ansible-playbook` command:
+
+```
+ansible-playbook deploy_siteq.yaml
+```
+
+Make sure to replace `your-hostname.com` with your desired hostname for the route.
