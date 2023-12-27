@@ -1,8 +1,8 @@
 kind: Namespace
 apiVersion: v1
 metadata:
-  name: open-caas-ops
+  name: myapp
   labels:
-    kubernetes.io/metadata.name: open-caas-ops
+    kubernetes.io/metadata.name: myapp
   annotations:
     argocd.argoproj.io/sync-wave: "1"
