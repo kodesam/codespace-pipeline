@@ -2,7 +2,7 @@ apiVersion: v1
 kind: Pod
 metadata:
   name: website-pod
-  namespace: open-caas-ops
+  namespace: default
   labels:
     app: healthcheck
 annotations:
