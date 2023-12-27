@@ -1,0 +1,44 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: hcconfigmap-v1
+  namespace: open-caas-ops
+  annotations:
+    argocd.argoproj.io/sync-wave: "2"
+data:
+  check_status.sh: |
+    #!/bin/sh
+    current_date=$(date")
+    (
+        echo "##################################################" 
+        echo $current_date 
+        echo "##################################################" 
+        echo "##################################################" 
+        echo "Cluster Information”
+        echo "##################################################" 
+        oc cluster-info 
+        echo "###################################################" 
+        echo "Cluster Version" 
+        echo "###################################################" 
+        oc version     
+        echo "#################################################" 
+        echo "checking node status" 
+        echo "################################################" 
+        oc get nodes 
+        echo "################################################" 
+        echo "clusteroperator status" 
+        echo "################################################" 
+        oc get co 
+        echo "################################################" 
+        echo "checking failed or degraded pods status" 
+        echo "###############################################" 
+        oc get pods -A | egrep -v 'Running|Completed' 
+        echo "###############################################" 
+        echo "checking node top memory and utilization"  
+        echo "##############################################################" 
+        oc adm top node 
+        echo "#############################################################" 
+        echo "checking top pods cpu and memory util" 
+        echo "############################################################" 
+        oc adm top pod -A 
+    )
