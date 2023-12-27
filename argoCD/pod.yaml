@@ -4,7 +4,7 @@ metadata:
   name: website-pod
   labels:
     app: website
-namespace: myapp    
+namespace: myapp
 spec:
   containers:
   - name: nginx-container
