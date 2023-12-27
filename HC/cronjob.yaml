@@ -1,0 +1,46 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: caas-ops-job-v1
+  namespace: open-caas-ops
+  annotations:
+    argocd.argoproj.io/compare-options: IgnoreExtraneous
+    argocd.argoproj.io/sync-wave: "5"
+spec:
+  concurrencyPolicy: Allow
+  failedJobsHistoryLimit: 1
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - command:
+            - /bin/sh
+            - -c
+            - cat /app/check_status.sh | /bin/sh
+            image: quay.io/openshift/origin-cli  
+            imagePullPolicy: Always
+            name: myapp
+            resources: {}
+            terminationMessagePath: /dev/termination-log
+            terminationMessagePolicy: File
+            volumeMounts:
+            - mountPath: /app
+              name: myvolume
+          dnsPolicy: ClusterFirst
+          restartPolicy: OnFailure
+          schedulerName: default-scheduler
+          securityContext: {}
+          serviceAccount: ocsa
+          serviceAccountName: ocsa
+          terminationGracePeriodSeconds: 30
+          volumes:
+          - configMap:
+              defaultMode: 420
+              items:
+              - key: check_status.sh
+                path: check_status.sh
+              name: hcconfigmap-v1
+            name: myvolume
+  schedule: '*/1 * * * *'
+  successfulJobsHistoryLimit: 3
