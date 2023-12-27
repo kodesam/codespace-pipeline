@@ -1,0 +1,1 @@
+Sync operation to 6bcb2cc45452680d1a6584b64a2b7adc3b66b83c failed: one or more objects failed to apply, reason: pods is forbidden: User "system:serviceaccount:openshift-gitops:openshift-gitops-argocd-application-controller" cannot create resource "pods" in API group "" in the namespace "default"
