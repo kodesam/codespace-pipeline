@@ -6,7 +6,6 @@ metadata:
   labels:
     app: healthcheck
 annotations:
-    argocd.argoproj.io/sync-wave: "3"
 spec:
   containers:
   - name: nginx-container
