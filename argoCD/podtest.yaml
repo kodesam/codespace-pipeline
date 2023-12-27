@@ -7,7 +7,7 @@ metadata:
 spec:
   containers:
   - name: nginx-container
-    image: nginx
+    image: nginx:latest
     ports:
     - containerPort: 80
       protocol: TCP
@@ -77,8 +77,8 @@ data:
 
 secrets name : website-secrets
 data:
-  username: <base64 encoded username>
-  password: <base64 encoded password>
+  username: test
+  password: test
 
 apiVersion: v1
 kind: Secret
@@ -86,5 +86,5 @@ metadata:
   name: website-secrets
 type: Opaque
 data:
-  username: <base64 encoded username>
-  password: <base64 encoded password>
+  username: test
+  password: test
