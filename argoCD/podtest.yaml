@@ -19,7 +19,7 @@ spec:
         cpu: 200m
         memory: 256Mi
 
----------------------------------------------------------------------
+-----
 
 services name : website-service
 targetPort : 80
@@ -39,7 +39,7 @@ spec:
     targetPort: 80
     nodePort: 30080
 
-----------------------------------------------------------------------
+----
 
 route name : website-route
 host : www.example.com
@@ -58,7 +58,7 @@ spec:
   port:
     targetPort: 80
 
------------------------------------------------------------------------
+----
 
 configmap name : website-configmap
 data:
@@ -73,7 +73,7 @@ data:
   environment: Production
   version: v1.0
 
------------------------------------------------------------------------
+----
 
 secrets name : website-secrets
 data:
