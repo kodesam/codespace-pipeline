@@ -4,7 +4,7 @@ metadata:
   name: website-pod
   namespace: open-caas-ops
   labels:
-    app: website
+    app: healthcheck
 annotations:
     argocd.argoproj.io/sync-wave: "3"
 spec:
