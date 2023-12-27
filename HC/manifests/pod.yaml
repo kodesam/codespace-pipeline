@@ -2,10 +2,10 @@ apiVersion: v1
 kind: Pod
 metadata:
   name: website-pod
-  namespace: myapp
+  namespace: default
   labels:
-    app: website
-
+    app: healthcheck
+annotations:
 spec:
   containers:
   - name: nginx-container

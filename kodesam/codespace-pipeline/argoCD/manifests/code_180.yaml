@@ -1,0 +1,21 @@
+Here is an example of a Kubernetes YAML file for creating a Pod with the given specifications:
+
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: app2
+spec:
+  replicas: 3
+  containers:
+    - name: nginx
+      image: nginx:latest
+```
+
+You can save the above code in a file with a .yaml extension (e.g., pod.yaml) and then create the Pod using the `kubectl` command:
+
+```
+kubectl apply -f pod.yaml
+```
+
+This will create 3 replicas of the Pod named "app2" using the Nginx container image.
