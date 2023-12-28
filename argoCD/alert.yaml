@@ -1,10 +1,12 @@
 ---
+
 apiVersion: v1
 kind: Namespace
 metadata:
   name: alertmanager-namespace
   namespace: default
 ---
+
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -37,12 +39,14 @@ spec:
           configMap:
             name: alertmanager-config-map
 ---
+
 apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: alertmanager-service-account
   namespace: default
 ---
+
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
@@ -58,6 +62,7 @@ rules:
       - list
       - watch
 ---
+
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
@@ -71,6 +76,7 @@ spec:
     - from:
         - podSelector: {}
 ---
+
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -84,6 +90,7 @@ data:
       receiver: null
     receivers: []
 ---
+
 apiVersion: v1
 kind: Service
 metadata:
@@ -96,4 +103,5 @@ spec:
       targetPort: 9093
   selector:
     app: alertmanager
+    
 ```
