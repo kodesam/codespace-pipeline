@@ -1,0 +1,98 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: alertmanager-namespace
+  namespace: default
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: alertmanager-deployment
+  namespace: default
+  labels:
+    app: alertmanager
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: alertmanager
+  template:
+    metadata:
+      labels:
+        app: alertmanager
+    spec:
+      containers:
+        - name: alertmanager
+          image: prom/alertmanager:v0.22.2
+          ports:
+            - containerPort: 9093
+          args:
+            - "--config.file=/etc/alertmanager/config.yml"
+          volumeMounts:
+            - name: config-volume
+              mountPath: /etc/alertmanager
+      volumes:
+        - name: config-volume
+          configMap:
+            name: alertmanager-config-map
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: alertmanager-service-account
+  namespace: default
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: alertmanager-cluster-role
+rules:
+  - apiGroups:
+      - ""
+    resources:
+      - pods
+      - services
+    verbs:
+      - get
+      - list
+      - watch
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: alertmanager-network-policy
+  namespace: default
+spec:
+  podSelector:
+    matchLabels:
+      app: alertmanager
+  ingress:
+    - from:
+        - podSelector: {}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: alertmanager-config-map
+  namespace: default
+data:
+  config.yml: |
+    global:
+      resolve_timeout: 5m
+    route:
+      receiver: null
+    receivers: []
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: alertmanager-service
+  namespace: default
+spec:
+  ports:
+    - protocol: TCP
+      port: 9093
+      targetPort: 9093
+  selector:
+    app: alertmanager
+```
