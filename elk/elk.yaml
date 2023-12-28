@@ -23,13 +23,13 @@ metadata:
 data:
   logstash.conf: |
     input {
-      // Define your input configurations
+      
     }
     filter {
-      // Define your filter configurations
+      
     }
     output {
-      // Define your output configurations
+      
     }
 
 # deployment.yaml
