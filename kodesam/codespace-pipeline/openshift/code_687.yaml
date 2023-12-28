@@ -1,0 +1,77 @@
+Certainly! Here's an updated version of the Jinja template with input parameters included:
+
+```jinja2
+# secrets.yaml
+apiVersion: v1
+kind: Secret
+metadata:
+  name: {{ secrets_name }}
+data:
+  secret-key: {{ secret_key | b64encode }}
+
+# configmap.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ configmap_name }}
+data:
+  config-key: {{ config_value }}
+
+# deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ deployment_name }}
+spec:
+  replicas: {{ replicas }}
+  selector:
+    matchLabels:
+      app: {{ app_name }}
+  template:
+    metadata:
+      labels:
+        app: {{ app_name }}
+    spec:
+      containers:
+        - name: {{ container_name }}
+          image: {{ container_image }}
+          ports:
+            - containerPort: {{ container_port }}
+          envFrom:
+            - secretRef:
+                name: {{ secrets_name }}
+            - configMapRef:
+                name: {{ configmap_name }}
+
+# service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ service_name }}
+spec:
+  selector:
+    app: {{ app_name }}
+  ports:
+    - protocol: TCP
+      port: {{ service_port }}
+      targetPort: {{ container_port }}
+
+# route.yaml
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: {{ route_name }}
+spec:
+  to:
+    kind: Service
+    name: {{ service_name }}
+    weight: 100
+  port:
+    targetPort: {{ container_port }}
+  tls:
+    termination: edge
+```
+
+In this template, there are several input parameters defined, such as `secrets_name`, `secret_key`, `configmap_name`, `config_value`, `deployment_name`, `replicas`, `app_name`, `container_name`, `container_image`, `container_port`, `service_name`, `service_port`, and `route_name`. You can replace these parameters with your desired values when rendering the template.
+
+Make sure to use a Jinja template engine, such as Jinja2 or Ansible, and provide the input parameter values when rendering the template to generate the Kubernetes YAML file.
