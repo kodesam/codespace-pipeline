@@ -1,0 +1,19 @@
+
+
+# configmap.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: elk-config
+  namespace: default
+data:
+  logstash.conf: |
+    input {
+      
+    }
+    filter {
+      
+    }
+    output {
+      
+    }
