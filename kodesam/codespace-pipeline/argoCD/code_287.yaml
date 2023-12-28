@@ -1,0 +1,122 @@
+Here's a sample Jinja template for creating a deployment for the Alertmanager application in OpenShift:
+
+```jinja
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: alertmanager-namespace
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: alertmanager-deployment
+  labels:
+    app: alertmanager
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: alertmanager
+  template:
+    metadata:
+      labels:
+        app: alertmanager
+    spec:
+      containers:
+        - name: alertmanager
+          image: prom/alertmanager:v0.22.2
+          ports:
+            - containerPort: 9093
+          args:
+            - "--config.file=/etc/alertmanager/config.yml"
+          volumeMounts:
+            - name: config-volume
+              mountPath: /etc/alertmanager
+      volumes:
+        - name: config-volume
+          configMap:
+            name: alertmanager-config-map
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: alertmanager-service-account
+  namespace: alertmanager-namespace
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: alertmanager-cluster-role
+rules:
+  - apiGroups:
+      - ""
+    resources:
+      - pods
+      - services
+    verbs:
+      - get
+      - list
+      - watch
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: alertmanager-network-policy
+  namespace: alertmanager-namespace
+spec:
+  podSelector:
+    matchLabels:
+      app: alertmanager
+  ingress:
+    - from:
+        - podSelector: {}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: alertmanager-config-map
+  namespace: alertmanager-namespace
+data:
+  config.yml: |
+    global:
+      resolve_timeout: 5m
+    route:
+      receiver: null
+    receivers: []
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: alertmanager-service
+  namespace: alertmanager-namespace
+spec:
+  ports:
+    - protocol: TCP
+      port: 9093
+      targetPort: 9093
+  selector:
+    app: alertmanager
+```
+
+In this Jinja template, the following resources are defined:
+
+1. Namespace: Creates a new namespace called "alertmanager-namespace" to isolate resources for Alertmanager.
+2. Deployment: Defines the deployment for the Alertmanager application using the `prom/alertmanager:v0.22.2` image. It mounts a ConfigMap for the configuration file.
+3. ServiceAccount: Creates a service account called "alertmanager-service-account" in the "alertmanager-namespace" namespace.
+4. ClusterRole: Assigns a cluster role called "alertmanager-cluster-role" that allows getting, listing, and watching pods and services.
+5. NetworkPolicy: Defines a network policy to allow ingress traffic to the Alertmanager pod from any other pods in the namespace.
+6. ConfigMap: Creates a ConfigMap called "alertmanager-config-map" in the "alertmanager-namespace" namespace. It contains the configuration file "config.yml" for Alertmanager.
+7. Service: Defines a service called "alertmanager-service" in the "alertmanager-namespace" namespace. It exposes the application's port.
+
+Please note that you may need to modify this template based on your specific requirements, such as image versions, ports, and configuration values.
+
+To deploy these resources, save the template as a YAML file and apply it to your OpenShift cluster using the `kubectl apply` command:
+
+```bash
+kubectl apply -f alertmanager.yaml
+```
+
+Ensure that you have the necessary permissions to create resources in your OpenShift environment.
+
+I hope this helps! Let me know if you have any further questions.
