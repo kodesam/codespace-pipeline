@@ -1,26 +1,32 @@
+# secrets.yaml
 ---
 apiVersion: v1
 kind: Secret
 metadata:
   name: my-secrets
+  namespace: my-namespace
 data:
   secret-key: test
 
+# configmap.yaml
 ---
 apiVersion: v1
 kind: ConfigMap
 metadata:
   name: my-configmap
+  namespace: my-namespace
 data:
   config-key: config-value
 
+# deployment.yaml
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: my-app
+  namespace: my-namespace
 spec:
-  replicas: 3
+  replicas: 1
   selector:
     matchLabels:
       app: my-app
@@ -30,34 +36,38 @@ spec:
         app: my-app
     spec:
       containers:
-        - name: my-app-container
-          image: nginx:latest
-          ports:
-            - containerPort: 8080
-          envFrom:
-            - secretRef:
-                name: my-secrets
-            - configMapRef:
-                name: my-configmap
+      - name: my-app-container
+        image: my-app-image:latest
+        ports:
+        - containerPort: 8080
+        envFrom:
+        - secretRef:
+            name: my-secrets
+        - configMapRef:
+            name: my-configmap
 
+# service.yaml
 ---
 apiVersion: v1
 kind: Service
 metadata:
   name: my-app-service
+  namespace: my-namespace
 spec:
   selector:
     app: my-app
   ports:
-    - protocol: TCP
-      port: 80
-      targetPort: 8080
+  - protocol: TCP
+    port: 80
+    targetPort: 8080
 
+# route.yaml
 ---
 apiVersion: route.openshift.io/v1
 kind: Route
 metadata:
   name: my-app-route
+  namespace: my-namespace
 spec:
   to:
     kind: Service
