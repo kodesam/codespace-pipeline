@@ -1,0 +1,19 @@
+
+# pod.yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: elk-pod
+  namespace: default  
+spec:
+  containers:
+    - name: elasticsearch
+      image: elasticsearch:7.12.1
+      # Define container configurations (e.g., resources, environment variables, volume mounts)
+    - name: logstash
+      image: logstash:7.12.1
+      # Define container configurations (e.g., resources, environment variables, volume mounts)
+    - name: kibana
+      image: kibana:7.12.1
+      # Define container configurations (e.g., resources, environment variables, volume mounts)
+
