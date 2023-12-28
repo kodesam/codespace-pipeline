@@ -1,0 +1,48 @@
+Here's an updated version of the previous Jinja template, where the cluster role now includes write verbs.
+
+```jinja
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: alertmanager-namespace
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: alertmanager-deployment
+  labels:
+    app: alertmanager
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: alertmanager
+  template:
+    metadata:
+      labels:
+        app: alertmanager
+    spec:
+      containers:
+        - name: alertmanager
+          image: prom/alertmanager:v0.22.2
+          ports:
+            - containerPort: 9093
+          args:
+            - "--config.file=/etc/alertmanager/config.yml"
+          volumeMounts:
+            - name: config-volume
+              mountPath: /etc/alertmanager
+      volumes:
+        - name: config-volume
+          configMap:
+            name: alertmanager-config-map
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: alertmanager-service-account
+  namespace: alertmanager-namespace
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
