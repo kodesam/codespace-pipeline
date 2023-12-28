@@ -1,0 +1,27 @@
+
+# deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: elk-deployment
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: elk-app
+  template:
+    metadata:
+      labels:
+        app: elk-app
+    spec:
+      containers:
+        - name: elasticsearch
+          image: elasticsearch:7.12.1
+          # Define container configurations (e.g., resources, environment variables, volume mounts)
+        - name: logstash
+          image: logstash:7.12.1
+          # Define container configurations (e.g., resources, environment variables, volume mounts)
+        - name: kibana
+          image: kibana:7.12.1
+          # Define container configurations (e.g., resources, environment variables, volume mounts)
