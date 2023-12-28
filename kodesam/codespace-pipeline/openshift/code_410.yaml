@@ -1,0 +1,75 @@
+Certainly! Here's an example of a sample YAML code that deploys a web application in a Kubernetes pod, along with secrets, configmaps, services, and a route:
+
+```yaml
+# secrets.yaml
+apiVersion: v1
+kind: Secret
+metadata:
+  name: my-secrets
+data:
+  secret-key: BASE64_ENCODED_VALUE
+
+# configmap.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: my-configmap
+data:
+  config-key: config-value
+
+# deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: my-app
+  template:
+    metadata:
+      labels:
+        app: my-app
+    spec:
+      containers:
+        - name: my-app-container
+          image: my-app-image:latest
+          ports:
+            - containerPort: 8080
+          envFrom:
+            - secretRef:
+                name: my-secrets
+            - configMapRef:
+                name: my-configmap
+
+# service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: my-app-service
+spec:
+  selector:
+    app: my-app
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8080
+
+# route.yaml
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: my-app-route
+spec:
+  to:
+    kind: Service
+    name: my-app-service
+    weight: 100
+  port:
+    targetPort: 8080
+  tls:
+    termination: edge
+```
+
+This is just a basic example, so make sure to customize the values according to your specific needs and resource definitions.
