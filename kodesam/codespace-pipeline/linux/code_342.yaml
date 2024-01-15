@@ -1,0 +1,24 @@
+Sure! Here is an example of an Ansible script that uses the `docker_secret` module to create a secret in Docker:
+
+
+---
+- hosts: localhost
+  tasks:
+    - name: Create Docker secret
+      docker_secret:
+        name: my_secret
+        data: "{{ secret_value }}"
+        provider: swarm
+
+
+In this script, we specify the `name` of the secret (`my_secret`) and the `data` to be stored in the secret (`{{ secret_value }}`). Replace `{{ secret_value }}` with the actual data you want to store as a secret.
+
+The `provider` parameter is set to `swarm` since the `docker_secret` module supports Docker Swarm mode.
+
+Save the script to a file, such as `create_docker_secret.yml`, and then run it using the `ansible-playbook` command:
+
+
+ansible-playbook -i localhost create_docker_secret.yml
+
+
+Make sure you have Ansible and the `docker_secret` module installed before running the script.
