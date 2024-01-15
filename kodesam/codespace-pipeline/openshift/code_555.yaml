@@ -1,0 +1,41 @@
+Sure! Here's an example of an Ansible script that uses the kubevirt_pvc module to create a PVC (Persistent Volume Claim) in Kubernetes:
+
+
+---
+- name: Create PVC
+  hosts: localhost
+  tasks:
+    - name: Create PVC
+      kubevirt_pvc:
+        name: my-pvc
+        namespace: my-namespace
+        storage_class: my-storage-class
+        access_modes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 5Gi
+      register: result
+
+    - name: Debug PVC creation result
+      debug:
+        var: result
+
+
+In this script, we define a task named "Create PVC" that uses the kubevirt_pvc module. The module requires several parameters:
+
+- `name`: The name of the PVC (e.g., "my-pvc").
+- `namespace`: The namespace in which to create the PVC (e.g., "my-namespace").
+- `storage_class`: The name of the storage class to use for the PVC (e.g., "my-storage-class").
+- `access_modes`: The access modes for the PVC. In this example, we use "ReadWriteOnce" but you can specify different modes.
+- `resources`: The resources requirements for the PVC. In this example, we specify a request for 5Gi of storage, but you can customize it as per your requirements.
+
+After creating the PVC, we register the result in the `result` variable and print it out using the `debug` task. This will show information about the PVC creation, such as if it was successful or not.
+
+You can save this script in a file, such as `create_pvc.yml`, and run it using the `ansible-playbook` command:
+
+
+ansible-playbook create_pvc.yml
+
+
+Make sure that you have Ansible and the `community.kubernetes` collection installed before running the script.
